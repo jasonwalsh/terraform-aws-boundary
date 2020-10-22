@@ -1,6 +1,6 @@
 variable "boundary_release" {
   default     = "0.1.0"
-  description = ""
+  description = "The version of Boundary to install"
   type        = string
 }
 
@@ -59,8 +59,13 @@ variable "min_size" {
   type        = number
 }
 
-variable "subnets" {
-  description = "The IDs of the public subnets"
+variable "private_subnets" {
+  description = "List of private subnets"
+  type        = list(string)
+}
+
+variable "public_subnets" {
+  description = "List of public subnets"
   type        = list(string)
 }
 
@@ -78,12 +83,4 @@ EOF
 variable "vpc_id" {
   description = "The ID of the VPC"
   type        = string
-}
-
-variable "vpc_zone_identifier" {
-  description = <<EOF
-A comma-separated list of subnet IDs for your virtual private cloud
-EOF
-
-  type = list(string)
 }

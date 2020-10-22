@@ -92,7 +92,7 @@ module "alb" {
   load_balancer_type = "application"
   name               = "boundary"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = var.subnets
+  subnets            = var.public_subnets
   tags               = var.tags
 
   target_groups = [
@@ -128,7 +128,7 @@ module "postgresql" {
   password                = random_password.postgresql.result
   port                    = 5432
   storage_encrypted       = false
-  subnet_ids              = var.vpc_zone_identifier
+  subnet_ids              = var.private_subnets
   tags                    = var.tags
   username                = "boundary"
   vpc_security_group_ids  = [aws_security_group.postgresql.id]
@@ -155,7 +155,7 @@ module "controllers" {
   security_groups     = [aws_security_group.controller.id]
   tags                = var.tags
   target_group_arns   = module.alb.target_group_arns
-  vpc_zone_identifier = var.vpc_zone_identifier
+  vpc_zone_identifier = var.private_subnets
 
   write_files = [
     {

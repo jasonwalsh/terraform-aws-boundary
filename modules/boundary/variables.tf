@@ -4,7 +4,7 @@ variable "auto_scaling_group_name" {
 }
 
 variable "boundary_release" {
-  description = ""
+  description = "The version of Boundary to install"
   type        = string
 }
 
@@ -30,8 +30,11 @@ EOF
 }
 
 variable "image_id" {
-  description = ""
-  type        = string
+  description = <<EOF
+The ID of the Amazon Machine Image (AMI) that was assigned during registration
+EOF
+
+  type = string
 }
 
 variable "instance_type" {
@@ -56,9 +59,14 @@ variable "min_size" {
 }
 
 variable "runcmd" {
-  default     = []
-  description = ""
-  type        = list(string)
+  default = []
+
+  description = <<EOF
+Run arbitrary commands at a rc.local like level with output to the
+console. Each item can be either a list or a string.
+EOF
+
+  type = list(string)
 }
 
 variable "security_groups" {
@@ -104,7 +112,7 @@ EOF
 
 variable "write_files" {
   default     = []
-  description = ""
+  description = "Write out arbitrary content to files, optionally setting permissions"
 
   type = list(object({
     content     = string

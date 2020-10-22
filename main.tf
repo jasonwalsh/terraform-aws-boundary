@@ -3,7 +3,9 @@ provider "aws" {}
 locals {
   image_id = data.aws_ami.boundary.id
 
-  subnets = coalescelist(var.subnets, module.vpc.public_subnets)
+  private_subnets = coalescelist(var.private_subnets, module.vpc.private_subnets)
+
+  public_subnets = coalescelist(var.public_subnets, module.vpc.public_subnets)
 
   tags = merge(
     var.tags,
@@ -13,8 +15,6 @@ locals {
   )
 
   vpc_id = coalesce(var.vpc_id, module.vpc.vpc_id)
-
-  vpc_zone_identifier = coalescelist(var.vpc_zone_identifier, module.vpc.private_subnets)
 }
 
 data "aws_availability_zones" "available" {}
@@ -28,16 +28,16 @@ data "aws_ami" "boundary" {
 module "controllers" {
   source = "./modules/controller"
 
-  boundary_release    = var.boundary_release
-  desired_capacity    = var.controller_desired_capacity
-  image_id            = local.image_id
-  instance_type       = var.controller_instance_type
-  max_size            = var.controller_max_size
-  min_size            = var.controller_min_size
-  subnets             = local.subnets
-  tags                = local.tags
-  vpc_id              = local.vpc_id
-  vpc_zone_identifier = local.vpc_zone_identifier
+  boundary_release = var.boundary_release
+  desired_capacity = var.controller_desired_capacity
+  image_id         = local.image_id
+  instance_type    = var.controller_instance_type
+  max_size         = var.controller_max_size
+  min_size         = var.controller_min_size
+  private_subnets  = local.private_subnets
+  public_subnets   = local.public_subnets
+  tags             = local.tags
+  vpc_id           = local.vpc_id
 }
 
 module "vpc" {
