@@ -1,3 +1,4 @@
-output "load_balancer_address" {
-  value = module.controllers.load_balancer_address
+output "dns_name" {
+  description = "The public DNS name of the controller load balancer"
+  value       = module.controllers.dns_name
 }

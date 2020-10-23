@@ -8,15 +8,13 @@ controller {
   name = "controller"
 }
 
+%{ for key in keys ~}
 kms "awskms" {
-  kms_key_id = "${kms_key_id}"
-  purpose    = "root"
+  kms_key_id = "${key["key_id"]}"
+  purpose    = "${key["purpose"]}"
 }
 
-kms "awskms" {
-  kms_key_id = "${kms_key_id}"
-  purpose    = "worker-auth"
-}
+%{ endfor ~}
 
 listener "tcp" {
   address     = "0.0.0.0"

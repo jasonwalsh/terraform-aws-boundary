@@ -11,7 +11,16 @@ locals {
         module.postgresql.this_db_instance_name
       )
 
-      kms_key_id = aws_kms_key.boundary.key_id
+      keys = [
+        {
+          key_id  = aws_kms_key.root.key_id
+          purpose = "root"
+        },
+        {
+          key_id  = aws_kms_key.auth.key_id
+          purpose = "worker-auth"
+        }
+      ]
     }
   )
 }
@@ -140,7 +149,7 @@ module "controllers" {
   auto_scaling_group_name = "boundary-controller"
   boundary_release        = var.boundary_release
   desired_capacity        = var.desired_capacity
-  iam_instance_profile    = aws_iam_instance_profile.boundary.name
+  iam_instance_profile    = aws_iam_instance_profile.controller.name
   image_id                = var.image_id
   instance_type           = var.instance_type
   key_name                = var.key_name
@@ -169,6 +178,9 @@ module "controllers" {
 }
 
 # https://www.boundaryproject.io/docs/configuration/kms/awskms#authentication
+#
+# Allows the controllers to invoke the Decrypt, DescribeKey, and Encrypt
+# routines for the worker-auth and root keys.
 data "aws_iam_policy_document" "kms" {
   statement {
     actions = [
@@ -179,7 +191,7 @@ data "aws_iam_policy_document" "kms" {
 
     effect = "Allow"
 
-    resources = [aws_kms_key.boundary.arn]
+    resources = [aws_kms_key.auth.arn, aws_kms_key.root.arn]
   }
 }
 
@@ -197,28 +209,35 @@ data "aws_iam_policy_document" "assume_role_policy" {
 }
 
 resource "aws_iam_policy" "kms" {
-  name   = "BoundaryServiceRolePolicy"
+  name   = "BoundaryControllerServiceRolePolicy"
   policy = data.aws_iam_policy_document.kms.json
 }
 
-resource "aws_iam_role" "boundary" {
+resource "aws_iam_role" "controller" {
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
-  name               = "ServiceRoleForBoundary"
+  name               = "ServiceRoleForBoundaryController"
   tags               = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "kms" {
   policy_arn = aws_iam_policy.kms.arn
-  role       = aws_iam_role.boundary.name
+  role       = aws_iam_role.controller.name
 }
 
-resource "aws_iam_instance_profile" "boundary" {
-  role = aws_iam_role.boundary.name
+resource "aws_iam_instance_profile" "controller" {
+  role = aws_iam_role.controller.name
 }
 
-# The root AWS KMS key used by controllers and workers
-resource "aws_kms_key" "boundary" {
+# The root key used by controllers
+resource "aws_kms_key" "root" {
   deletion_window_in_days = 7
   key_usage               = "ENCRYPT_DECRYPT"
-  tags                    = var.tags
+  tags                    = merge(var.tags, { Purpose = "root" })
+}
+
+# The worker-auth AWS KMS key used by controllers and workers
+resource "aws_kms_key" "auth" {
+  deletion_window_in_days = 7
+  key_usage               = "ENCRYPT_DECRYPT"
+  tags                    = merge(var.tags, { Purpose = "worker-auth" })
 }
