@@ -1,0 +1,12 @@
+[Unit]
+Description=Access any system from anywhere based on user identity
+Documentation=https://www.boundaryproject.io/docs
+
+[Service]
+ExecStart=/usr/local/bin/boundary server -config /etc/boundary/configuration.hcl
+LimitMEMLOCK=infinity
+Capabilities=CAP_IPC_LOCK+ep
+CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+
+[Install]
+WantedBy=multi-user.target
