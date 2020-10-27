@@ -38,9 +38,20 @@ variable "instance_type" {
   type        = string
 }
 
+variable "ip_addresses" {
+  default     = []
+  description = "One or more private IPv4 addresses associated with the controllers"
+  type        = list(string)
+}
+
 variable "key_name" {
   default     = ""
   description = "The name of the key pair"
+  type        = string
+}
+
+variable "kms_key_id" {
+  description = "The unique identifier for the worker-auth key"
   type        = string
 }
 
@@ -56,14 +67,14 @@ variable "min_size" {
   type        = number
 }
 
-variable "private_subnets" {
-  description = "List of private subnets"
-  type        = list(string)
-}
-
 variable "public_subnets" {
   description = "List of public subnets"
   type        = list(string)
+}
+
+variable "security_group_id" {
+  description = "The ID of the controller security group"
+  type        = string
 }
 
 variable "tags" {

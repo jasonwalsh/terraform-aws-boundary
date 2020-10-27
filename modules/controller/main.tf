@@ -25,6 +25,18 @@ locals {
   )
 }
 
+data "aws_instances" "controllers" {
+  instance_state_names = ["running"]
+
+  instance_tags = {
+    "aws:autoscaling:groupName" = module.controllers.auto_scaling_group_name
+  }
+}
+
+data "aws_s3_bucket" "boundary" {
+  bucket = var.bucket_name
+}
+
 resource "aws_security_group" "alb" {
   egress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -57,23 +69,36 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_security_group" "controller" {
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-  }
-
-  ingress {
-    from_port       = 9200
-    protocol        = "TCP"
-    security_groups = [aws_security_group.alb.id]
-    to_port         = 9200
-  }
-
   name   = "Boundary controller"
   tags   = var.tags
   vpc_id = var.vpc_id
+}
+
+resource "aws_security_group_rule" "ssh" {
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 22
+  protocol          = "TCP"
+  security_group_id = aws_security_group.controller.id
+  to_port           = 22
+  type              = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress" {
+  from_port                = 9200
+  protocol                 = "TCP"
+  security_group_id        = aws_security_group.controller.id
+  source_security_group_id = aws_security_group.alb.id
+  to_port                  = 9200
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "egress" {
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.controller.id
+  to_port           = 0
+  type              = "egress"
 }
 
 resource "aws_security_group" "postgresql" {
@@ -148,6 +173,7 @@ module "controllers" {
 
   auto_scaling_group_name = "boundary-controller"
   boundary_release        = var.boundary_release
+  bucket_name             = var.bucket_name
   desired_capacity        = var.desired_capacity
   iam_instance_profile    = aws_iam_instance_profile.controller.name
   image_id                = var.image_id
@@ -158,7 +184,7 @@ module "controllers" {
 
   # Initialize the DB before starting the service
   runcmd = [
-    "boundary database init -config /etc/boundary/configuration.hcl"
+    "boundary database init -config /etc/boundary/configuration.hcl -log-format json"
   ]
 
   security_groups     = [aws_security_group.controller.id]
@@ -168,8 +194,7 @@ module "controllers" {
 
   write_files = [
     {
-      content     = base64encode(local.configuration)
-      encoding    = "b64"
+      content     = local.configuration
       owner       = "root:root"
       path        = "/etc/boundary/configuration.hcl"
       permissions = "0644"
@@ -181,7 +206,7 @@ module "controllers" {
 #
 # Allows the controllers to invoke the Decrypt, DescribeKey, and Encrypt
 # routines for the worker-auth and root keys.
-data "aws_iam_policy_document" "kms" {
+data "aws_iam_policy_document" "controller" {
   statement {
     actions = [
       "kms:Decrypt",
@@ -192,6 +217,19 @@ data "aws_iam_policy_document" "kms" {
     effect = "Allow"
 
     resources = [aws_kms_key.auth.arn, aws_kms_key.root.arn]
+  }
+
+  statement {
+    actions = [
+      "s3:*"
+    ]
+
+    effect = "Allow"
+
+    resources = [
+      "${data.aws_s3_bucket.boundary.arn}/",
+      "${data.aws_s3_bucket.boundary.arn}/*"
+    ]
   }
 }
 
@@ -208,9 +246,9 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
-resource "aws_iam_policy" "kms" {
+resource "aws_iam_policy" "controller" {
   name   = "BoundaryControllerServiceRolePolicy"
-  policy = data.aws_iam_policy_document.kms.json
+  policy = data.aws_iam_policy_document.controller.json
 }
 
 resource "aws_iam_role" "controller" {
@@ -219,8 +257,8 @@ resource "aws_iam_role" "controller" {
   tags               = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "kms" {
-  policy_arn = aws_iam_policy.kms.arn
+resource "aws_iam_role_policy_attachment" "controller" {
+  policy_arn = aws_iam_policy.controller.arn
   role       = aws_iam_role.controller.name
 }
 

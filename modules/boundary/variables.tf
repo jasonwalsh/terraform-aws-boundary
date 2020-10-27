@@ -8,6 +8,15 @@ variable "boundary_release" {
   type        = string
 }
 
+variable "bucket_name" {
+  description = <<EOF
+The name of the bucket to upload the contents of the
+cloud-init-output.log file
+EOF
+
+  type = string
+}
+
 variable "desired_capacity" {
   default = 0
 
@@ -116,7 +125,6 @@ variable "write_files" {
 
   type = list(object({
     content     = string
-    encoding    = string
     owner       = string
     path        = string
     permissions = string
