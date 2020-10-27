@@ -1,5 +1,3 @@
-disable_mlock = true
-
 controller {
   database {
     url = "${database_url}"
@@ -7,6 +5,8 @@ controller {
 
   name = "controller"
 }
+
+disable_mlock = true
 
 %{ for key in keys ~}
 kms "awskms" {
@@ -17,13 +17,13 @@ kms "awskms" {
 %{ endfor ~}
 
 listener "tcp" {
-  address     = "0.0.0.0"
+  address     = "{{ds.meta_data.local_ipv4}}:9201"
   purpose     = "cluster"
   tls_disable = true
 }
 
 listener "tcp" {
-  address     = "0.0.0.0"
+  address     = "{{ds.meta_data.local_ipv4}}:9200"
   purpose     = "api"
   tls_disable = true
 }

@@ -8,6 +8,11 @@ variable "boundary_release" {
   type        = string
 }
 
+variable "bucket_name" {
+  description = ""
+  type        = string
+}
+
 variable "desired_capacity" {
   default = 0
 
@@ -116,7 +121,6 @@ variable "write_files" {
 
   type = list(object({
     content     = string
-    encoding    = string
     owner       = string
     path        = string
     permissions = string
