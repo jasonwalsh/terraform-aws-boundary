@@ -5,8 +5,12 @@ variable "boundary_release" {
 }
 
 variable "bucket_name" {
-  description = ""
-  type        = string
+  description = <<EOF
+The name of the bucket to upload the contents of the
+cloud-init-output.log file
+EOF
+
+  type = string
 }
 
 variable "desired_capacity" {

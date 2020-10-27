@@ -5,8 +5,12 @@ variable "boundary_release" {
 }
 
 variable "bucket_name" {
-  description = ""
-  type        = string
+  description = <<EOF
+The name of the bucket to upload the contents of the
+cloud-init-output.log file
+EOF
+
+  type = string
 }
 
 variable "desired_capacity" {
@@ -36,7 +40,7 @@ variable "instance_type" {
 
 variable "ip_addresses" {
   default     = []
-  description = ""
+  description = "One or more private IPv4 addresses associated with the controllers"
   type        = list(string)
 }
 
@@ -47,7 +51,7 @@ variable "key_name" {
 }
 
 variable "kms_key_id" {
-  description = ""
+  description = "The unique identifier for the worker-auth key"
   type        = string
 }
 
@@ -69,7 +73,7 @@ variable "public_subnets" {
 }
 
 variable "security_group_id" {
-  description = ""
+  description = "The ID of the controller security group"
   type        = string
 }
 

@@ -10,6 +10,7 @@
 | Name | Version |
 |------|---------|
 | aws | n/a |
+| random | n/a |
 
 ## Inputs
 
@@ -35,5 +36,6 @@
 | Name | Description |
 |------|-------------|
 | dns\_name | The public DNS name of the controller load balancer |
+| s3command | The S3 cp command used to display the contents of the cloud-init-output.log |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

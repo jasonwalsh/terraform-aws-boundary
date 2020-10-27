@@ -4,7 +4,8 @@ output "dns_name" {
 }
 
 output "ip_addresses" {
-  value = data.aws_instances.controllers.private_ips
+  description = "One or more private IPv4 addresses associated with the controllers"
+  value       = data.aws_instances.controllers.private_ips
 }
 
 output "kms_key_id" {
@@ -13,5 +14,6 @@ output "kms_key_id" {
 }
 
 output "security_group_id" {
-  value = aws_security_group.controller.id
+  description = "The ID of the controller security group"
+  value       = aws_security_group.controller.id
 }

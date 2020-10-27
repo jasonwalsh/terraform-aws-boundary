@@ -4,7 +4,7 @@ output "dns_name" {
 }
 
 output "s3command" {
-  description = ""
+  description = "The S3 cp command used to display the contents of the cloud-init-output.log"
 
   value = format(
     "aws s3 cp s3://%s/%s -",
