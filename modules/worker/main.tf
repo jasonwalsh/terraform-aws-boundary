@@ -22,6 +22,7 @@ data "aws_security_group" "controller" {
   id = var.security_group_id
 }
 
+# Allows the workers to gossip with the controller on :9201
 resource "aws_security_group_rule" "controller" {
   from_port                = 9201
   protocol                 = "TCP"
@@ -37,13 +38,6 @@ resource "aws_security_group" "worker" {
     from_port   = 0
     protocol    = "-1"
     to_port     = 0
-  }
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 22
-    protocol    = "TCP"
-    to_port     = 22
   }
 
   ingress {
