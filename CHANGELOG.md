@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.0.0...v1.1.0) (2020-11-02)
+
+
+### Features
+
+* support bastion host creation ([#4](https://github.com/jasonwalsh/terraform-aws-boundary/issues/4)) ([34c51b1](https://github.com/jasonwalsh/terraform-aws-boundary/commit/34c51b1927936de5c730cfae83cfdbeca726c3dc))
+
 # 1.0.0 (2020-10-27)
 
 
