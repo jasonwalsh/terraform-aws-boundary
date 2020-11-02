@@ -1,3 +1,9 @@
+variable "bastion_security_group" {
+  default     = ""
+  description = "The ID of the bastion security group"
+  type        = string
+}
+
 variable "boundary_release" {
   default     = "0.1.0"
   description = "The version of Boundary to install"

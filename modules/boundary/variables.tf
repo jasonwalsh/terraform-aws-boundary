@@ -1,6 +1,18 @@
+variable "after_start" {
+  default     = []
+  description = "Run arbitrary commands after starting the Boundary service"
+  type        = list(string)
+}
+
 variable "auto_scaling_group_name" {
   description = "The name of the Auto Scaling group"
   type        = string
+}
+
+variable "before_start" {
+  default     = []
+  description = "Run arbitrary commands before starting the Boundary service"
+  type        = list(string)
 }
 
 variable "boundary_release" {
@@ -65,17 +77,6 @@ variable "max_size" {
 variable "min_size" {
   description = "The minimum size of the group"
   type        = number
-}
-
-variable "runcmd" {
-  default = []
-
-  description = <<EOF
-Run arbitrary commands at a rc.local like level with output to the
-console. Each item can be either a list or a string.
-EOF
-
-  type = list(string)
 }
 
 variable "security_groups" {

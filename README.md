@@ -105,6 +105,7 @@ As always, thanks for using this module!
 | controller\_instance\_type | Specifies the instance type of the controller EC2 instance | `string` | `"t3.small"` | no |
 | controller\_max\_size | The maximum size of the controller group | `number` | `3` | no |
 | controller\_min\_size | The minimum size of the controller group | `number` | `3` | no |
+| key\_name | The name of the key pair | `string` | `""` | no |
 | private\_subnets | List of private subnets | `list(string)` | `[]` | no |
 | public\_subnets | List of public subnets | `list(string)` | `[]` | no |
 | tags | One or more tags | `map(string)` | `{}` | no |

@@ -47,6 +47,17 @@ resource "aws_security_group" "worker" {
     to_port     = 9202
   }
 
+  dynamic "ingress" {
+    for_each = var.key_name != "" ? [22] : []
+
+    content {
+      from_port       = 22
+      protocol        = "TCP"
+      security_groups = [var.bastion_security_group]
+      to_port         = 22
+    }
+  }
+
   name   = "Boundary worker"
   tags   = var.tags
   vpc_id = var.vpc_id
@@ -55,7 +66,7 @@ resource "aws_security_group" "worker" {
 module "workers" {
   source = "../boundary"
 
-  auto_scaling_group_name = "boundary-worker"
+  auto_scaling_group_name = "Boundary Worker"
   boundary_release        = var.boundary_release
   bucket_name             = var.bucket_name
   desired_capacity        = var.desired_capacity

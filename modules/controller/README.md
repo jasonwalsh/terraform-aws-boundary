@@ -31,6 +31,7 @@ No requirements.
 
 | Name | Description |
 |------|-------------|
+| bastion\_security\_group | The ID of the bastion security group |
 | dns\_name | The public DNS name of the load balancer |
 | ip\_addresses | One or more private IPv4 addresses associated with the controllers |
 | kms\_key\_id | The unique identifier for the worker-auth key |

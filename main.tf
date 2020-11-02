@@ -52,6 +52,7 @@ module "controllers" {
   desired_capacity = var.controller_desired_capacity
   image_id         = local.image_id
   instance_type    = var.controller_instance_type
+  key_name         = var.key_name
   max_size         = var.controller_max_size
   min_size         = var.controller_min_size
   private_subnets  = local.private_subnets
@@ -63,19 +64,21 @@ module "controllers" {
 module "workers" {
   source = "./modules/worker"
 
-  boundary_release  = var.boundary_release
-  bucket_name       = aws_s3_bucket.boundary.id
-  desired_capacity  = var.worker_desired_capacity
-  image_id          = local.image_id
-  instance_type     = var.worker_instance_type
-  ip_addresses      = module.controllers.ip_addresses
-  kms_key_id        = module.controllers.kms_key_id
-  max_size          = var.worker_max_size
-  min_size          = var.worker_min_size
-  public_subnets    = local.public_subnets
-  security_group_id = module.controllers.security_group_id
-  tags              = local.tags
-  vpc_id            = local.vpc_id
+  bastion_security_group = module.controllers.bastion_security_group
+  boundary_release       = var.boundary_release
+  bucket_name            = aws_s3_bucket.boundary.id
+  desired_capacity       = var.worker_desired_capacity
+  image_id               = local.image_id
+  instance_type          = var.worker_instance_type
+  ip_addresses           = module.controllers.ip_addresses
+  key_name               = var.key_name
+  kms_key_id             = module.controllers.kms_key_id
+  max_size               = var.worker_max_size
+  min_size               = var.worker_min_size
+  public_subnets         = local.public_subnets
+  security_group_id      = module.controllers.security_group_id
+  tags                   = local.tags
+  vpc_id                 = local.vpc_id
 }
 
 module "vpc" {
