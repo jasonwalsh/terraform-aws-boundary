@@ -13,6 +13,7 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| bastion\_security\_group | The ID of the bastion security group | `string` | `""` | no |
 | boundary\_release | The version of Boundary to install | `string` | `"0.1.0"` | no |
 | bucket\_name | The name of the bucket to upload the contents of the<br>cloud-init-output.log file | `string` | n/a | yes |
 | desired\_capacity | The desired capacity is the initial capacity of the Auto Scaling group<br>at the time of its creation and the capacity it attempts to maintain. | `number` | `3` | no |

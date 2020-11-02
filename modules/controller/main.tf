@@ -74,6 +74,17 @@ resource "aws_security_group" "controller" {
   vpc_id = var.vpc_id
 }
 
+resource "aws_security_group_rule" "ssh" {
+  count = var.key_name != "" ? 1 : 0
+
+  from_port                = 22
+  protocol                 = "TCP"
+  security_group_id        = aws_security_group.controller.id
+  source_security_group_id = join("", aws_security_group.bastion[*].id)
+  to_port                  = 22
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "ingress" {
   from_port                = 9200
   protocol                 = "TCP"
@@ -162,26 +173,34 @@ module "postgresql" {
 module "controllers" {
   source = "../boundary"
 
-  auto_scaling_group_name = "boundary-controller"
-  boundary_release        = var.boundary_release
-  bucket_name             = var.bucket_name
-  desired_capacity        = var.desired_capacity
-  iam_instance_profile    = aws_iam_instance_profile.controller.name
-  image_id                = var.image_id
-  instance_type           = var.instance_type
-  key_name                = var.key_name
-  max_size                = var.max_size
-  min_size                = var.min_size
+  after_start = [
+    "grep 'Initial auth information' /var/log/cloud-init-output.log && aws s3 cp /var/log/cloud-init-output.log s3://${var.bucket_name}/{{v1.local_hostname}}/cloud-init-output.log || true"
+  ]
 
-  # Initialize the DB before starting the service
-  runcmd = [
+  auto_scaling_group_name = "Boundary Controller"
+
+  # Initialize the DB before starting the service and install the AWS
+  # CLI.
+  before_start = [
+    "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip",
+    "unzip awscliv2.zip",
+    "./aws/install",
     "boundary database init -config /etc/boundary/configuration.hcl -log-format json"
   ]
 
-  security_groups     = [aws_security_group.controller.id]
-  tags                = var.tags
-  target_group_arns   = module.alb.target_group_arns
-  vpc_zone_identifier = var.private_subnets
+  boundary_release     = var.boundary_release
+  bucket_name          = var.bucket_name
+  desired_capacity     = var.desired_capacity
+  iam_instance_profile = aws_iam_instance_profile.controller.name
+  image_id             = var.image_id
+  instance_type        = var.instance_type
+  key_name             = var.key_name
+  max_size             = var.max_size
+  min_size             = var.min_size
+  security_groups      = [aws_security_group.controller.id]
+  tags                 = var.tags
+  target_group_arns    = module.alb.target_group_arns
+  vpc_zone_identifier  = var.private_subnets
 
   write_files = [
     {
@@ -269,4 +288,38 @@ resource "aws_kms_key" "auth" {
   deletion_window_in_days = 7
   key_usage               = "ENCRYPT_DECRYPT"
   tags                    = merge(var.tags, { Purpose = "worker-auth" })
+}
+
+resource "aws_security_group" "bastion" {
+  count = var.key_name != "" ? 1 : 0
+
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    protocol    = "-1"
+    to_port     = 0
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 22
+    protocol    = "TCP"
+    to_port     = 22
+  }
+
+  name   = "Boundary Bastion"
+  tags   = var.tags
+  vpc_id = var.vpc_id
+}
+
+resource "aws_instance" "bastion" {
+  count = var.key_name != "" ? 1 : 0
+
+  ami                         = var.image_id
+  associate_public_ip_address = true
+  instance_type               = "t3.micro"
+  key_name                    = var.key_name
+  subnet_id                   = var.public_subnets[0]
+  tags                        = merge(var.tags, { Name = "Boundary Bastion" })
+  vpc_security_group_ids      = [join("", aws_security_group.bastion[*].id)]
 }

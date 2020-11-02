@@ -13,18 +13,15 @@ locals {
 
     runcmd = concat(
       [
-        "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip",
-        "unzip awscliv2.zip",
-        "./aws/install",
         "wget -O boundary.zip ${local.download_url}",
         "unzip boundary.zip -d /usr/local/bin"
       ],
-      var.runcmd,
+      var.before_start,
       [
         "systemctl enable boundary",
         "systemctl start boundary",
-        "grep 'Initial auth information' /var/log/cloud-init-output.log && aws s3 cp /var/log/cloud-init-output.log s3://${var.bucket_name}/{{v1.local_hostname}}/cloud-init-output.log || true"
-      ]
+      ],
+      var.after_start
     )
 
     write_files = concat(
