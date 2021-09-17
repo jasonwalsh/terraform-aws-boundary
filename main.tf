@@ -1,5 +1,3 @@
-provider "aws" {}
-
 locals {
   image_id = data.aws_ami.boundary.id
 
