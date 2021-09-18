@@ -1,11 +1,11 @@
 output "bastion_security_group" {
   description = "The ID of the bastion security group"
-  value       = join("", aws_security_group.bastion[*].id)
+  value       = one(aws_security_group.bastion[*].id)
 }
 
 output "dns_name" {
   description = "The public DNS name of the load balancer"
-  value       = module.alb.this_lb_dns_name
+  value       = module.alb.lb_dns_name
 }
 
 output "ip_addresses" {

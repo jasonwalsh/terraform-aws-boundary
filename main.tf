@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 1.0"
+}
+
 locals {
   image_id = data.aws_ami.boundary.id
 
@@ -80,7 +84,8 @@ module "workers" {
 }
 
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.7.0"
 
   azs                = data.aws_availability_zones.available.names
   cidr               = var.cidr_block

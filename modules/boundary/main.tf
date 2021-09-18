@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
 locals {
   desired_capacity = max(var.desired_capacity, var.min_size)
 
@@ -40,27 +49,40 @@ locals {
 }
 
 module "autoscaling" {
-  source = "terraform-aws-modules/autoscaling/aws"
+  source  = "terraform-aws-modules/autoscaling/aws"
+  version = "~> 4.6"
 
-  desired_capacity             = local.desired_capacity
-  health_check_type            = "EC2"
-  iam_instance_profile         = var.iam_instance_profile
-  image_id                     = var.image_id
-  instance_type                = var.instance_type
-  key_name                     = var.key_name
-  max_size                     = var.max_size
-  min_size                     = var.min_size
-  name                         = var.auto_scaling_group_name
-  recreate_asg_when_lc_changes = true
-  security_groups              = var.security_groups
-  tags_as_map                  = var.tags
-  target_group_arns            = var.target_group_arns
+  create_lt                = true
+  desired_capacity         = local.desired_capacity
+  health_check_type        = "EC2"
+  iam_instance_profile_arn = var.iam_instance_profile
+  image_id                 = var.image_id
 
-  user_data = <<EOF
+  instance_refresh = {
+    preferences = {
+      min_healthy_percentage = 80
+    }
+
+    strategy = "Rolling"
+  }
+
+  instance_type          = var.instance_type
+  key_name               = var.key_name
+  max_size               = var.max_size
+  min_size               = var.min_size
+  name                   = var.auto_scaling_group_name
+  security_groups        = var.security_groups
+  tags_as_map            = var.tags
+  target_group_arns      = var.target_group_arns
+  update_default_version = true
+  use_lt                 = true
+
+  user_data_base64 = base64encode(<<EOF
 ## template: jinja
 #cloud-config
 ${yamlencode(local.user_data)}
 EOF
+  )
 
   vpc_zone_identifier = var.vpc_zone_identifier
 }

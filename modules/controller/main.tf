@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
 locals {
   configuration = templatefile(
     "${path.module}/templates/configuration.hcl.tpl",
@@ -5,10 +14,10 @@ locals {
       # Database URL for PostgreSQL
       database_url = format(
         "postgresql://%s:%s@%s/%s",
-        module.postgresql.this_db_instance_username,
-        module.postgresql.this_db_instance_password,
-        module.postgresql.this_db_instance_endpoint,
-        module.postgresql.this_db_instance_name
+        module.postgresql.db_instance_username,
+        module.postgresql.db_instance_password,
+        module.postgresql.db_instance_endpoint,
+        module.postgresql.db_instance_name
       )
 
       keys = [
@@ -80,7 +89,7 @@ resource "aws_security_group_rule" "ssh" {
   from_port                = 22
   protocol                 = "TCP"
   security_group_id        = aws_security_group.controller.id
-  source_security_group_id = join("", aws_security_group.bastion[*].id)
+  source_security_group_id = one(aws_security_group.bastion[*].id)
   to_port                  = 22
   type                     = "ingress"
 }
@@ -116,7 +125,8 @@ resource "aws_security_group" "postgresql" {
 }
 
 module "alb" {
-  source = "terraform-aws-modules/alb/aws"
+  source  = "terraform-aws-modules/alb/aws"
+  version = "~> 6.5"
 
   http_tcp_listeners = [
     {
@@ -148,7 +158,8 @@ resource "random_password" "postgresql" {
 }
 
 module "postgresql" {
-  source = "terraform-aws-modules/rds/aws"
+  source  = "terraform-aws-modules/rds/aws"
+  version = "~> 3.4"
 
   allocated_storage       = 5
   backup_retention_period = 0
@@ -321,5 +332,5 @@ resource "aws_instance" "bastion" {
   key_name                    = var.key_name
   subnet_id                   = var.public_subnets[0]
   tags                        = merge(var.tags, { Name = "Boundary Bastion" })
-  vpc_security_group_ids      = [join("", aws_security_group.bastion[*].id)]
+  vpc_security_group_ids      = [one(aws_security_group.bastion[*].id)]
 }

@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
 locals {
   configuration = templatefile(
     "${path.module}/templates/configuration.hcl.tpl",
