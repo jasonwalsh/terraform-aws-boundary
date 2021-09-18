@@ -85,7 +85,7 @@ module "workers" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 3.7.0"
+  version = "~> 3.7"
 
   azs                = data.aws_availability_zones.available.names
   cidr               = var.cidr_block
