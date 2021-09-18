@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.0...v1.1.1) (2021-09-18)
+
+
+### Bug Fixes
+
+* **:wrench::** Remove default aws provider from the main.tf ([#5](https://github.com/jasonwalsh/terraform-aws-boundary/issues/5)) ([9838848](https://github.com/jasonwalsh/terraform-aws-boundary/commit/9838848efb5f21457b227f7236fc6becf5ada8d9))
+
 # [1.1.0](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.0.0...v1.1.0) (2020-11-02)
 
 
