@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.1...v1.1.2) (2021-09-21)
+
+
+### Bug Fixes
+
+* add module version constraints ([#7](https://github.com/jasonwalsh/terraform-aws-boundary/issues/7)) ([97d4727](https://github.com/jasonwalsh/terraform-aws-boundary/commit/97d472739c61fca0908ae54896eafa300713bdd9)), closes [#6](https://github.com/jasonwalsh/terraform-aws-boundary/issues/6)
+
 ## [1.1.1](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.0...v1.1.1) (2021-09-18)
 
 
