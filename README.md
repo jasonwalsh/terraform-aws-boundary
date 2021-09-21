@@ -86,6 +86,7 @@ As always, thanks for using this module!
 
 | Name | Version |
 |------|---------|
+| terraform | ~> 1.0 |
 | terraform | >= 0.13 |
 
 ## Providers
