@@ -188,7 +188,7 @@ module "controllers" {
     "grep 'Initial auth information' /var/log/cloud-init-output.log && aws s3 cp /var/log/cloud-init-output.log s3://${var.bucket_name}/{{v1.local_hostname}}/cloud-init-output.log || true"
   ]
 
-  auto_scaling_group_name = "Boundary Controller"
+  auto_scaling_group_name = "Boundary_Controller"
 
   # Initialize the DB before starting the service and install the AWS
   # CLI.
