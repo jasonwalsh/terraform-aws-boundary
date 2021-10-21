@@ -75,7 +75,7 @@ resource "aws_security_group" "worker" {
 module "workers" {
   source = "../boundary"
 
-  auto_scaling_group_name = "Boundary_Worker"
+  auto_scaling_group_name = "boundaryworker"
   boundary_release        = var.boundary_release
   bucket_name             = var.bucket_name
   desired_capacity        = var.desired_capacity
