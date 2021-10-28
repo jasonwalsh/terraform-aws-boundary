@@ -67,7 +67,7 @@ resource "aws_security_group" "worker" {
     }
   }
 
-  name   = "Boundary worker"
+  name   = "BoundaryWorker"
   tags   = var.tags
   vpc_id = var.vpc_id
 }
@@ -75,7 +75,7 @@ resource "aws_security_group" "worker" {
 module "workers" {
   source = "../boundary"
 
-  auto_scaling_group_name = "Boundary Worker"
+  auto_scaling_group_name = "BoundaryWorker"
   boundary_release        = var.boundary_release
   bucket_name             = var.bucket_name
   desired_capacity        = var.desired_capacity
