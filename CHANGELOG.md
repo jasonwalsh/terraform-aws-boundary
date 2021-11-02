@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.2...v1.1.3) (2021-11-02)
+
+
+### Bug Fixes
+
+* remove spaces in Auto Scaling Group names ([#11](https://github.com/jasonwalsh/terraform-aws-boundary/issues/11)) ([d5ab69a](https://github.com/jasonwalsh/terraform-aws-boundary/commit/d5ab69ade0e24c5ff77fb3965b4998d3a21892fa))
+
 ## [1.1.2](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.1...v1.1.2) (2021-09-21)
 
 
