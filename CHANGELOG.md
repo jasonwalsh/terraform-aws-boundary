@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.3...v1.1.4) (2021-11-02)
+
+
+### Bug Fixes
+
+* remove space in controller ASG name ([#12](https://github.com/jasonwalsh/terraform-aws-boundary/issues/12)) ([461b2ad](https://github.com/jasonwalsh/terraform-aws-boundary/commit/461b2adfdb39d2ada958e9eb1aa27c72e6a74b86))
+
 ## [1.1.3](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.2...v1.1.3) (2021-11-02)
 
 
