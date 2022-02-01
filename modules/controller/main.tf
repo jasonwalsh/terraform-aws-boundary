@@ -202,7 +202,7 @@ module "controllers" {
   boundary_release     = var.boundary_release
   bucket_name          = var.bucket_name
   desired_capacity     = var.desired_capacity
-  iam_instance_profile = aws_iam_instance_profile.controller.name
+  iam_instance_profile = aws_iam_instance_profile.controller.arn
   image_id             = var.image_id
   instance_type        = var.instance_type
   key_name             = var.key_name
