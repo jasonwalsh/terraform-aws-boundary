@@ -1,3 +1,11 @@
+## [1.1.5](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.4...v1.1.5) (2022-02-01)
+
+
+### Bug Fixes
+
+* iam_instance_profile arn ([#15](https://github.com/jasonwalsh/terraform-aws-boundary/issues/15)) ([a17e153](https://github.com/jasonwalsh/terraform-aws-boundary/commit/a17e1539a6a91dd45059d04a035f12d959b2b7c0))
+* update semantic release GitHub workflow ([8b0696b](https://github.com/jasonwalsh/terraform-aws-boundary/commit/8b0696b8b40794a3eaac45524f959cbbf3dc02b1))
+
 ## [1.1.4](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.3...v1.1.4) (2021-11-02)
 
 
