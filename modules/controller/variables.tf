@@ -56,13 +56,19 @@ variable "min_size" {
   type        = number
 }
 
+variable "engine_version" {
+  default     = "12.10"
+  description = "The engine_version of the postgres db, within the postgres12 family"
+  type        = string
+}
+
 variable "private_subnets" {
-  description = "List of private subnets"
+  description = "List of private subnet ids"
   type        = list(string)
 }
 
 variable "public_subnets" {
-  description = "List of public subnets"
+  description = "List of public subnet ids"
   type        = list(string)
 }
 
