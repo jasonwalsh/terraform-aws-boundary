@@ -34,6 +34,12 @@ variable "controller_min_size" {
   type        = number
 }
 
+variable "engine_version" {
+  default     = "12.10"
+  description = "The engine_version of the postgres db, within the postgres12 family"
+  type        = string
+}
+
 variable "key_name" {
   default     = ""
   description = "The name of the key pair"
