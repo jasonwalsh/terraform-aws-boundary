@@ -52,6 +52,7 @@ module "controllers" {
   boundary_release = var.boundary_release
   bucket_name      = aws_s3_bucket.boundary.id
   desired_capacity = var.controller_desired_capacity
+  engine_version   = var.engine_version
   image_id         = local.image_id
   instance_type    = var.controller_instance_type
   key_name         = var.key_name
