@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.5...v1.2.0) (2023-02-03)
+
+
+### Features
+
+* parameterize engine_version ([#16](https://github.com/jasonwalsh/terraform-aws-boundary/issues/16)) ([b22fee0](https://github.com/jasonwalsh/terraform-aws-boundary/commit/b22fee0f4f8d465cd5b2e7fd77450fb8c2a66eb4))
+
 ## [1.1.5](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.4...v1.1.5) (2022-02-01)
 
 
