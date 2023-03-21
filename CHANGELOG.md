@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.2.0...v1.3.0) (2023-03-21)
+
+
+### Features
+
+* update default Boundary version ([#22](https://github.com/jasonwalsh/terraform-aws-boundary/issues/22)) ([2cd8cda](https://github.com/jasonwalsh/terraform-aws-boundary/commit/2cd8cda53ee11561d8fb0a71f65bafb2c256430e)), closes [#16](https://github.com/jasonwalsh/terraform-aws-boundary/issues/16)
+
 # [1.2.0](https://github.com/jasonwalsh/terraform-aws-boundary/compare/v1.1.5...v1.2.0) (2023-02-03)
 
 
