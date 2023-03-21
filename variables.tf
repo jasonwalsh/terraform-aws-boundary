@@ -1,5 +1,5 @@
 variable "boundary_release" {
-  default     = "0.1.0"
+  default     = "0.12.0"
   description = "The version of Boundary to install"
   type        = string
 }
